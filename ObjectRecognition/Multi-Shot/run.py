@@ -5,7 +5,7 @@ from Model import neural_network, load_mnist_preprocessed
 date = datetime.datetime.today().strftime('%d-%m-%Y-%H:%M')
 batch_size = 128
 num_classes = 10
-epochs = 2
+epochs = 1
 img_rows, img_cols = 28, 28
 
 
