@@ -1,33 +1,23 @@
-import numpy as np
-from keras.datasets import mnist
-from Model import neural_network, data_shaping, data_shaping_subset
 import datetime
+from Model import neural_network, load_mnist_preprocessed
 
-# Get date
-date = datetime.datetime.today().strftime('%d-%m-%Y')
 
-# Parameters
+date = datetime.datetime.today().strftime('%d-%m-%Y-%H:%M')
 batch_size = 128
-n_classes = 8
+num_classes = 10
 epochs = 2
-
-# Import mnist dataset
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
-
-#Reshape data
-"""x_train, x_test, y_train, y_test = dataShaping(x_train, x_test, y_train, y_test, n_classes)"""
-x_train, x_test, y_train, y_test = data_shaping_subset(x_train, x_test, y_train, y_test, n_classes)
-print(np.shape(x_train))
+img_rows, img_cols = 28, 28
 
 
-# Build neural network
-model = neural_network(n_classes)
-history = model.fit(x_train, y_train,
-                    batch_size=batch_size,
-                    epochs=epochs,
-                    verbose=1,
-                    validation_data=(x_test, y_test))
+(x_train, y_train), (x_test, y_test), input_shape = load_mnist_preprocessed(img_rows, img_cols, num_classes)
 
+model = neural_network(num_classes, input_shape)
+
+model.fit(x_train, y_train,
+          batch_size=batch_size,
+          epochs=epochs,
+          verbose=1,
+          validation_data=(x_test, y_test))
 
 model.save("models/model" + str(date))
 

@@ -23,7 +23,7 @@ def get_image():
 
 
 
-date = datetime.datetime.today().strftime('%d-%m-%Y')
+date = datetime.datetime.today().strftime('%d-%m-%Y-%H:%M')
 model = load_model_from_file("models/model" + str(date))
 test_image = get_image().reshape(1, 784)
 model.predict(test_image, batch_size=None, verbose=1, steps=None)
