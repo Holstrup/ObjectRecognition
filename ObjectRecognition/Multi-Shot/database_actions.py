@@ -58,8 +58,6 @@ def add_encoding(classification, label="Null"):
     connection.commit()
     connection.close()
 
-
-
 def get_known_encodings():
     """
     :return: encodings array of (128, n)
@@ -75,6 +73,6 @@ def get_known_encodings():
     labels = []
 
     for i in range(len(result_list)):
-        encodings[:,i] = result_list[i][0]
+        encodings[:, i] = result_list[i][0]
         labels.append(result_list[i][1].encode())
     return encodings, labels
