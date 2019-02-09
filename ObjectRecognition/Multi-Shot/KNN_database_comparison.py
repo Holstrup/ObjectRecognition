@@ -12,5 +12,5 @@ def knn(encodings):
     neigh.fit(samples)
     i = neigh.kneighbors(encodings, return_distance=False)
     label = get_known_encodings()[1][i[0][0]]
-    print(label)
+    return label
 

@@ -12,7 +12,7 @@ def load_model_from_file(filepath):
     """
     Loads CNN to global variable 'model'
 
-    :param filepath to model file:
+    :param filepath: filepath to model file:
     """
     global model
     model = load_model(filepath)
@@ -61,8 +61,8 @@ def try_classification(data_no_label):
 load_model_from_file("models/model09-02-2019-14:29")
 (x_test, y_test), input_shape = new_function(28, 28, 10)
 build_db(x_test[0:20], y_test[0:20])
-data = try_classification(x_test[30:40])
+data = try_classification(x_test[100:200])
 
-tt = data[7].reshape(1, -1)
+tt = data[0].reshape(1, -1)
 print(y_test[30:40])
 knn(tt)
