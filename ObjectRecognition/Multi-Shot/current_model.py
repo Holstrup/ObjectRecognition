@@ -1,8 +1,7 @@
 import numpy as np
 from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten, BatchNormalization, Activation
-from keras.optimizers import Adam, Adadelta
-from keras.regularizers import l2
-from keras.losses import categorical_crossentropy, mean_squared_error
+from keras.optimizers import Adadelta
+from keras.losses import categorical_crossentropy
 from keras.utils import to_categorical
 from keras.datasets import mnist
 from keras.models import Sequential
@@ -77,29 +76,52 @@ def load_mnist_preprocessed(img_rows, img_cols, num_classes):
 
     return (x_train, y_train), (x_test, y_test), input_shape
 
+
 def load_mnist_preprocessed_subset(img_rows, img_cols, num_classes):
     # the data, shuffled and split between train and test sets
-    (x_train, y_train), (x_test, y_test) = mnist.load_data()
+    (x_train, y_train), (_, _) = mnist.load_data()
 
-    subset_x = np.zeros(num_classes)
-
-    for i in range(num_classes):
-        index = (np.where(y_train == i)[0][0]).item()
-        print(type(index))
-        subset_x[i] = x_train[index]
+    train_filter = np.where((y_train < 8))
+    x_train, y_train = x_train[train_filter], y_train[train_filter]
 
 
     if K.image_data_format() == 'channels_first':  # Theano backend
-        subset_x = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
+        x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
         input_shape = (1, img_rows, img_cols)
     else:
-        subset_x = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
+        x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
         input_shape = (img_rows, img_cols, 1)
 
     # normalise:
-    subset_x = x_train.astype('float32')
-    subset_x /= 255
+    x_train = x_train.astype('float32')
+    x_train /= 255
 
-    return subset_x, input_shape
+    # convert class vectors to binary class matrices
+    y_train = to_categorical(y_train, num_classes)
 
-load_mnist_preprocessed_subset(28,28,8)
+    return (x_train, y_train), input_shape
+
+def new_function(img_rows, img_cols, num_classes):
+    # the data, shuffled and split between train and test sets
+    (x_train, y_train), (_, _) = mnist.load_data()
+
+    train_filter = np.where((y_train >= 8))
+    x_train, y_train = x_train[train_filter], y_train[train_filter]
+
+
+    if K.image_data_format() == 'channels_first':  # Theano backend
+        x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
+        input_shape = (1, img_rows, img_cols)
+    else:
+        x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
+        input_shape = (img_rows, img_cols, 1)
+
+    # normalise:
+    x_train = x_train.astype('float32')
+    x_train /= 255
+
+    # convert class vectors to binary class matrices
+    y_train = to_categorical(y_train, num_classes)
+
+    return (x_train, y_train), input_shape
+
