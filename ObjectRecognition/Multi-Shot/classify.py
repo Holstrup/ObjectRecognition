@@ -1,4 +1,5 @@
 from current_model import new_function
+from KNN_database_comparison import knn
 import database_actions
 from keras.models import load_model
 from keras.losses import categorical_crossentropy
@@ -62,3 +63,6 @@ load_model_from_file("models/model09-02-2019-14:29")
 build_db(x_test[0:20], y_test[0:20])
 data = try_classification(x_test[30:40])
 
+tt = data[7].reshape(1, -1)
+print(y_test[30:40])
+knn(tt)
