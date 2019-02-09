@@ -1,46 +1,62 @@
 import numpy as np
-from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
-from keras.optimizers import Adadelta
-from keras.losses import categorical_crossentropy
+from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten, BatchNormalization, Activation
+from keras.optimizers import Adam, Adadelta
+from keras.regularizers import l2
+from keras.losses import categorical_crossentropy, mean_squared_error
 from keras.utils import to_categorical
 from keras.datasets import mnist
 from keras.models import Sequential
 from keras import backend as K
 
 
-def neural_network(num_classes, input_shape):
+def conv_net(num_classes, input_shape):
     """
     :param input_shape: Input shape of image
     :param num_classes: number of classes to classify in
     :return: A model that can classify these classes
     """
     model = Sequential()
-    model.add(Conv2D(32, kernel_size=(3, 3),
-                     activation='relu',
-                     input_shape=input_shape))
 
-    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(Conv2D(32, (3, 3), input_shape=input_shape))
+    model.add(BatchNormalization(axis=-1))
+    model.add(Activation('relu'))
+    model.add(Conv2D(32, (3, 3)))
+    model.add(BatchNormalization(axis=-1))
+    model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
+
+    model.add(Conv2D(64, (3, 3)))
+    model.add(BatchNormalization(axis=-1))
+    model.add(Activation('relu'))
+    model.add(Conv2D(64, (3, 3)))
+    model.add(BatchNormalization(axis=-1))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
     model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(num_classes, activation='softmax'))
+
+    # Fully connected layer
+    model.add(Dense(128))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dropout(0.2))
+
+
+    model.add(Dense(num_classes))
+    model.add(Activation('softmax'))
+
 
     model.summary()
-    model.compile(loss=categorical_crossentropy,
-                  optimizer=Adadelta(),
-                  metrics=['accuracy'])
+    model.compile(loss=categorical_crossentropy, optimizer=Adadelta(), metrics=['accuracy'])
 
     return model
 
 
 def load_mnist_preprocessed(img_rows, img_cols, num_classes):
-    # the data, split between train and test sets
+    # the data, shuffled and split between train and test sets
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-
-    if K.image_data_format() == 'channels_first':
+    if K.image_data_format() == 'channels_first':  # Theano backend
         x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
         x_test = x_test.reshape(x_test.shape[0], 1, img_rows, img_cols)
         input_shape = (1, img_rows, img_cols)
@@ -49,13 +65,11 @@ def load_mnist_preprocessed(img_rows, img_cols, num_classes):
         x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
         input_shape = (img_rows, img_cols, 1)
 
+    # normalise:
     x_train = x_train.astype('float32')
     x_test = x_test.astype('float32')
     x_train /= 255
     x_test /= 255
-    print('x_train shape:', x_train.shape)
-    print(x_train.shape[0], 'train samples')
-    print(x_test.shape[0], 'test samples')
 
     # convert class vectors to binary class matrices
     y_train = to_categorical(y_train, num_classes)
@@ -63,37 +77,29 @@ def load_mnist_preprocessed(img_rows, img_cols, num_classes):
 
     return (x_train, y_train), (x_test, y_test), input_shape
 
-def load_subset_mnist_preprocessed(img_rows, img_cols, num_classes):
-    # the data, split between train and test sets
+def load_mnist_preprocessed_subset(img_rows, img_cols, num_classes):
+    # the data, shuffled and split between train and test sets
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-    maxNumber = 7
+    subset_x = np.zeros(num_classes)
 
-    train_filter = np.where(y_train < maxNumber - 1)
-    test_filter = np.where(y_test < maxNumber - 1)
+    for i in range(num_classes):
+        index = (np.where(y_train == i)[0][0]).item()
+        print(type(index))
+        subset_x[i] = x_train[index]
 
-    x_train, y_train = x_train[train_filter], y_train[train_filter]
-    x_test, y_test = x_test[test_filter], y_test[test_filter]
 
-    if K.image_data_format() == 'channels_first':
-        x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
-        x_test = x_test.reshape(x_test.shape[0], 1, img_rows, img_cols)
+    if K.image_data_format() == 'channels_first':  # Theano backend
+        subset_x = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
         input_shape = (1, img_rows, img_cols)
     else:
-        x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
-        x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
+        subset_x = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
         input_shape = (img_rows, img_cols, 1)
 
-    x_train = x_train.astype('float32')
-    x_test = x_test.astype('float32')
-    x_train /= 255
-    x_test /= 255
-    print('x_train shape:', x_train.shape)
-    print(x_train.shape[0], 'train samples')
-    print(x_test.shape[0], 'test samples')
+    # normalise:
+    subset_x = x_train.astype('float32')
+    subset_x /= 255
 
-    # convert class vectors to binary class matrices
-    y_train = to_categorical(y_train, num_classes)
-    y_test = to_categorical(y_test, num_classes)
+    return subset_x, input_shape
 
-    return (x_train, y_train), (x_test, y_test), input_shape
+load_mnist_preprocessed_subset(28,28,8)
