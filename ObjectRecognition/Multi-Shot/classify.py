@@ -1,4 +1,4 @@
-from current_model import new_function
+from current_model import mnist_test_set
 from KNN_database_comparison import knn
 import database_actions
 from keras.models import load_model
@@ -57,12 +57,30 @@ def try_classification(data_no_label):
     encodings = model.predict(data_no_label, batch_size=None, verbose=1, steps=None)
     return encodings
 
+database_actions.reinitialize_table()
+load_model_from_file("models/model10-02-2019-10:09")
+(x_test, y_test), input_shape = mnist_test_set(28, 28, 10)
 
-load_model_from_file("models/model09-02-2019-14:29")
-(x_test, y_test), input_shape = new_function(28, 28, 10)
+
+#20 samples in the database
 build_db(x_test[0:20], y_test[0:20])
+
+#Testing on 100 (different) samples
 data = try_classification(x_test[100:200])
 
-tt = data[0].reshape(1, -1)
-print(y_test[30:40])
-knn(tt)
+correct = 0
+wrong = 0
+
+for i in range(len(data)):
+    predicted_label = int(knn(data[i].reshape(1, -1)))
+    real_label_one_hot = y_test[100 + i]
+    real_label_int = (np.where(real_label_one_hot == 1)[0]).item()
+    if real_label_int == predicted_label:
+        print("Correct")
+        correct += 1
+    else:
+        print "Wrong"
+        wrong += 1
+
+print correct
+

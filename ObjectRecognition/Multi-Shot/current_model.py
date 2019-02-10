@@ -81,7 +81,7 @@ def load_mnist_preprocessed_subset(img_rows, img_cols, num_classes):
     # the data, shuffled and split between train and test sets
     (x_train, y_train), (_, _) = mnist.load_data()
 
-    train_filter = np.where((y_train < 8))
+    train_filter = np.where((y_train < 5))
     x_train, y_train = x_train[train_filter], y_train[train_filter]
 
 
@@ -101,11 +101,11 @@ def load_mnist_preprocessed_subset(img_rows, img_cols, num_classes):
 
     return (x_train, y_train), input_shape
 
-def new_function(img_rows, img_cols, num_classes):
+def mnist_test_set(img_rows, img_cols, num_classes):
     # the data, shuffled and split between train and test sets
     (x_train, y_train), (_, _) = mnist.load_data()
 
-    train_filter = np.where((y_train >= 8))
+    train_filter = np.where((y_train >= 5))
     x_train, y_train = x_train[train_filter], y_train[train_filter]
 
 
