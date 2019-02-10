@@ -6,7 +6,7 @@ from keras.models import Model
 date = datetime.datetime.today().strftime('%d-%m-%Y-%H:%M')
 batch_size = 128
 num_classes = 5
-epochs = 4
+epochs = 5
 img_rows, img_cols = 28, 28
 
 #Dimensions: (60000, 28, 28, 1), (60000, 10), (10000, 28, 28, 1), (10000, 10)

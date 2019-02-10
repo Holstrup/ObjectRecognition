@@ -58,15 +58,15 @@ def try_classification(data_no_label):
     return encodings
 
 database_actions.reinitialize_table()
-load_model_from_file("models/model10-02-2019-10:09")
+load_model_from_file("models/model10-02-2019-12:31")
 (x_test, y_test), input_shape = mnist_test_set(28, 28, 10)
 
 
 #20 samples in the database
 build_db(x_test[0:20], y_test[0:20])
 
-#Testing on 100 (different) samples
-data = try_classification(x_test[100:200])
+#Testing on 1000 (different) samples
+data = try_classification(x_test[100:1100])
 
 correct = 0
 wrong = 0
