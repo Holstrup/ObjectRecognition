@@ -58,7 +58,7 @@ def try_classification(data_no_label):
     return encodings
 
 database_actions.reinitialize_table()
-load_model_from_file("models/model09-02-2019-14:29")
+load_model_from_file("models/model11-02-2019-13:44")
 (x_test, y_test), input_shape = mnist_test_set(28, 28, 10)
 
 
