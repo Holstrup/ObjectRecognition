@@ -16,25 +16,43 @@ def conv_net(num_classes, input_shape):
     """
     model = Sequential()
 
+
     model.add(Conv2D(32, (3, 3), input_shape=input_shape))
     model.add(BatchNormalization(axis=-1))
     model.add(Activation('relu'))
+
     model.add(Conv2D(32, (3, 3)))
     model.add(BatchNormalization(axis=-1))
     model.add(Activation('relu'))
+
+    model.add(Conv2D(32, (3, 3)))
+    model.add(BatchNormalization(axis=-1))
+    model.add(Activation('relu'))
+
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
     model.add(Conv2D(64, (3, 3)))
     model.add(BatchNormalization(axis=-1))
     model.add(Activation('relu'))
+
+
     model.add(Conv2D(64, (3, 3)))
     model.add(BatchNormalization(axis=-1))
     model.add(Activation('relu'))
+
+    model.add(Conv2D(64, (3, 3)))
+    model.add(BatchNormalization(axis=-1))
+    model.add(Activation('relu'))
+
+    model.add(Conv2D(64, (3, 3)))
+    model.add(BatchNormalization(axis=-1))
+    model.add(Activation('relu'))
+
+
     model.add(MaxPooling2D(pool_size=(2, 2)))
+
 
     model.add(Flatten())
-
-    # Fully connected layer
     model.add(Dense(128))
     model.add(BatchNormalization())
     model.add(Activation('relu'))

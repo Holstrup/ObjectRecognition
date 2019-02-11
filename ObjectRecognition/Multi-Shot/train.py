@@ -6,7 +6,7 @@ def run_train():
     date = datetime.datetime.today().strftime('%d-%m-%Y-%H:%M')
     batch_size = 128
     num_classes = 5
-    epochs = 5
+    epochs = 10
     img_rows, img_cols = 28, 28
 
     #Dimensions: (60000, 28, 28, 1), (60000, 10), (10000, 28, 28, 1), (10000, 10)
@@ -23,10 +23,11 @@ def run_train():
               epochs=epochs,
               verbose=1)
 
-    CNN = Model(input = model.layers[0].input, output = model.layers[15].output)
+    CNN = Model(input = model.layers[0].input, output = model.layers[-5].output)
 
     CNN.summary()
 
     CNN.save("models/model" + str(date))
+run_train()
 
 
