@@ -4,6 +4,7 @@ import sklearn.decomposition as deco
 from model import *
 from database_actions import get_known_encodings
 import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
 
 
 def pca_full_mnist():
@@ -47,8 +48,7 @@ def plot(data, labels):
     group = map(int, labels)
     cdict = {5: 'red', 6: 'blue', 7: 'green', 8: 'black', 9: 'orange'}
 
-
-    plt.subplots()
+    fig = plt.figure()
     ax = plt.axes(projection='3d')
     for g in np.unique(group):
         ix = np.where(group == g)
