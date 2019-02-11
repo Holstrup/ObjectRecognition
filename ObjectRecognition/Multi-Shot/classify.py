@@ -58,9 +58,14 @@ def try_classification(data_no_label):
 
 
 
-def run_classify(time_stamp_model):
+def run_classify(model_name_time):
+    """
+    Runs a test of the network
+
+    :param model_name_time: model name
+    """
     database_actions.reinitialize_table()
-    load_model_from_file("models/model" + time_stamp_model)
+    load_model_from_file("models/model" + model_name_time)
     model.compile(loss=categorical_crossentropy, optimizer=Adam(), metrics=['accuracy'])
 
     (x_test, y_test), input_shape = mnist_test_set(28, 28, 10)

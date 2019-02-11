@@ -16,7 +16,6 @@ def conv_net(num_classes, input_shape):
     """
     model = Sequential()
 
-
     model.add(Conv2D(32, (3, 3), input_shape=input_shape))
     model.add(BatchNormalization(axis=-1))
     model.add(Activation('relu'))
@@ -57,6 +56,14 @@ def conv_net(num_classes, input_shape):
 
 
 def load_mnist_preprocessed(img_rows, img_cols, num_classes):
+    """
+    Loads full MNist dataset
+
+    :param img_rows: Dimension of images
+    :param img_cols: Dimension of images
+    :param num_classes: Number of classes to train over
+    :return: processed train data, test data and input shape
+    """
     # the data, shuffled and split between train and test sets
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
@@ -83,6 +90,14 @@ def load_mnist_preprocessed(img_rows, img_cols, num_classes):
 
 
 def load_mnist_preprocessed_subset(img_rows, img_cols, num_classes):
+    """
+    Loads subset of MNist [0:4]
+
+    :param img_rows: Dimension of images
+    :param img_cols: Dimension of images
+    :param num_classes: Number of classes to train over
+    :return: processed train data and input shape
+    """
     # the data, shuffled and split between train and test sets
     (x_train, y_train), (_, _) = mnist.load_data()
 
@@ -107,6 +122,14 @@ def load_mnist_preprocessed_subset(img_rows, img_cols, num_classes):
     return (x_train, y_train), input_shape
 
 def mnist_test_set(img_rows, img_cols, num_classes):
+    """
+    Loads subset of MNist to test on[5:9]
+
+    :param img_rows: Dimension of images
+    :param img_cols: Dimension of images
+    :param num_classes: Number of classes to train over
+    :return: processed train data and input shape
+    """
     # the data, shuffled and split between train and test sets
     (x_train, y_train), (_, _) = mnist.load_data()
 
