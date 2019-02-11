@@ -1,6 +1,9 @@
 import datetime
 from model import conv_net, load_mnist_preprocessed_subset
 from keras.models import Model
+from keras.losses import categorical_crossentropy
+from keras.optimizers import Adam
+
 
 def run_train():
     date = datetime.datetime.today().strftime('%d-%m-%Y-%H:%M')
@@ -26,6 +29,8 @@ def run_train():
     CNN = Model(input = model.layers[0].input, output = model.layers[-5].output)
 
     CNN.summary()
+    model.compile(loss=categorical_crossentropy, optimizer=Adam(), metrics=['accuracy'])
+
 
     CNN.save("models/model" + str(date))
 

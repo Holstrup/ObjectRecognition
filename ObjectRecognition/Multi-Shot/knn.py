@@ -1,6 +1,6 @@
 from sklearn.neighbors import NearestNeighbors
-from database_actions import *
-
+from database_actions import get_known_encodings
+import numpy as np
 
 def knn_function(encodings):
     """
