@@ -2,7 +2,7 @@ import pylab as plt
 import numpy as np
 import seaborn as sns; sns.set()
 from keras.datasets import mnist
-from current_model import *
+from model import *
 
 # (x_train, y_train), (x_test, y_test) = load_mnist_preprocessed(28, 28, 10)
 (x_train, y_train), (x_test, y_test) = mnist.load_data()

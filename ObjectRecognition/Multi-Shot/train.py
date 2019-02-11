@@ -1,5 +1,5 @@
 import datetime
-from current_model import conv_net, load_mnist_preprocessed, load_mnist_preprocessed_subset
+from model import conv_net, load_mnist_preprocessed, load_mnist_preprocessed_subset
 from keras.models import Model
 
 

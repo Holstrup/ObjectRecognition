@@ -1,5 +1,5 @@
-from current_model import mnist_test_set
-from KNN_database_comparison import knn
+from model import mnist_test_set
+from knn import knn_function, new_knn_function
 import database_actions
 from keras.models import load_model
 from keras.losses import categorical_crossentropy
@@ -58,7 +58,7 @@ def try_classification(data_no_label):
     return encodings
 
 database_actions.reinitialize_table()
-load_model_from_file("models/model10-02-2019-12:31")
+load_model_from_file("models/model09-02-2019-14:29")
 (x_test, y_test), input_shape = mnist_test_set(28, 28, 10)
 
 
@@ -69,18 +69,14 @@ build_db(x_test[0:20], y_test[0:20])
 data = try_classification(x_test[100:1100])
 
 correct = 0
-wrong = 0
 
 for i in range(len(data)):
-    predicted_label = int(knn(data[i].reshape(1, -1)))
-    real_label_one_hot = y_test[100 + i]
-    real_label_int = (np.where(real_label_one_hot == 1)[0]).item()
+    predicted_label = new_knn_function(data[i])
+    real_label_int = real_label_int = (np.where(y_test[100 + i] == 1)[0]).item()
     if real_label_int == predicted_label:
-        print("Correct")
         correct += 1
-    else:
-        print "Wrong"
-        wrong += 1
+
 
 print correct
+
 
