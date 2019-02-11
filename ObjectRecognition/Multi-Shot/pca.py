@@ -4,7 +4,7 @@ import sklearn.decomposition as deco
 from model import *
 from database_actions import get_known_encodings
 import matplotlib.pyplot as plt
-
+from mpl_toolkits import mplot3d
 
 def pca_full_mnist():
     # (x_train, y_train), (x_test, y_test) = load_mnist_preprocessed(28, 28, 10)
@@ -19,11 +19,11 @@ def pca_full_mnist():
     Rpca = np.dot(Zpca[:,:2], V[:2,:]) + mu
     err = np.sum((x_train-Rpca)**2)/Rpca.shape[0]/Rpca.shape[1]
 
-    plt.figure(figsize=(8,4))
     plt.title('PCA')
     plt.scatter(Zpca[:5000,0], Zpca[:5000,1], c=y_train[:5000], s=8, cmap='tab10')
     plt.gca().get_xaxis().set_ticklabels([])
     plt.gca().get_yaxis().set_ticklabels([])
+    plt.savefig('pca/pca_full.png')
     plt.show()
 
 
@@ -37,7 +37,6 @@ def pca():
     pca = deco.PCA(n_components)
     x_r = pca.fit(x).transform(x)
     return x_r, labels
-
 
 
 def plot(data, labels):
@@ -75,12 +74,11 @@ def plot(data, labels):
     ax.legend()
     plt.xlabel("Z")
     plt.ylabel("X")
-
-
+    plt.savefig('pca/pca_current_encodings.png')
     plt.show()
-
 
 
 pca_data, db_labels = pca()
 plot(pca_data, db_labels)
 
+pca_full_mnist()
