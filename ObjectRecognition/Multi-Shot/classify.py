@@ -86,5 +86,4 @@ def run_classify(model_name_time):
             correct += 1
     print "Correct: " + str(correct)
 
-run_classify("12-02-2019-12:43")
 
