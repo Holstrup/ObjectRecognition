@@ -39,16 +39,9 @@ def conv_net(num_classes, input_shape):
 
 
     model.add(Flatten())
-    model.add(Dense(512))
-    model.add(BatchNormalization())
-    model.add(Activation('relu'))
-    model.add(Dropout(0.2))
-    model.add(Dense(256))
-    model.add(BatchNormalization())
-    model.add(Activation('relu'))
     model.add(Dense(128))
-    model.add(BatchNormalization())
-    model.add(Activation('sigmoid'))
+    model.add(Dropout(0.2))
+    model.add(Activation('relu'))
 
 
     model.add(Dense(num_classes))

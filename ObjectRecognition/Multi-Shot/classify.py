@@ -67,6 +67,7 @@ def run_classify(model_name_time):
     database_actions.reinitialize_table()
     load_model_from_file("models/model" + model_name_time)
     model.compile(loss=categorical_crossentropy, optimizer=Adam(), metrics=['accuracy'])
+    model.summary()
 
     (x_test, y_test), input_shape = mnist_test_set(28, 28, 10)
 
@@ -87,3 +88,4 @@ def run_classify(model_name_time):
     print "Correct: " + str(correct)
 
 
+run_classify("12-02-2019-14:17")
