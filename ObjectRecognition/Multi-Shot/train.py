@@ -22,11 +22,11 @@ def run_train(n_epochs, model_name="null"):
     epochs = n_epochs
     img_rows, img_cols = 28, 28
 
-
     (x_train, y_train), input_shape = load_mnist_preprocessed_subset(img_rows, img_cols, num_classes)
     model = conv_net(num_classes, input_shape)
     model.fit(x_train, y_train, batch_size=batch_size,epochs=epochs,verbose=1)
-    CNN = Model(input = model.layers[0].input, output = model.layers[-5].output)
+    CNN = Model(input = model.layers[0].input, output = model.layers[-3].output)
+    CNN.summary()
     CNN.save("models/model" + name)
 
-
+run_train(1)

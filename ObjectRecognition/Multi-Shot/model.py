@@ -29,7 +29,7 @@ def conv_net(num_classes, input_shape):
     model.add(Conv2D(64, (3, 3)))
     model.add(BatchNormalization(axis=-1))
     model.add(Activation('relu'))
-
+    model.add(Dropout(0.2))
 
     model.add(Conv2D(64, (3, 3)))
     model.add(BatchNormalization(axis=-1))
@@ -39,10 +39,16 @@ def conv_net(num_classes, input_shape):
 
 
     model.add(Flatten())
-    model.add(Dense(128))
+    model.add(Dense(512))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(Dropout(0.2))
+    model.add(Dense(256))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dense(128))
+    model.add(BatchNormalization())
+    model.add(Activation('sigmoid'))
 
 
     model.add(Dense(num_classes))
@@ -64,29 +70,9 @@ def load_mnist_preprocessed(img_rows, img_cols, num_classes):
     :param num_classes: Number of classes to train over
     :return: processed train data, test data and input shape
     """
-    # the data, shuffled and split between train and test sets
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-    if K.image_data_format() == 'channels_first':  # Theano backend
-        x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
-        x_test = x_test.reshape(x_test.shape[0], 1, img_rows, img_cols)
-        input_shape = (1, img_rows, img_cols)
-    else:
-        x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
-        x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
-        input_shape = (img_rows, img_cols, 1)
-
-    # normalise:
-    x_train = x_train.astype('float32')
-    x_test = x_test.astype('float32')
-    x_train /= 255
-    x_test /= 255
-
-    # convert class vectors to binary class matrices
-    y_train = to_categorical(y_train, num_classes)
-    y_test = to_categorical(y_test, num_classes)
-
-    return (x_train, y_train), (x_test, y_test), input_shape
+    return data_processing(img_rows, img_cols, num_classes, x_train, y_train, x_test, y_test)
 
 
 def load_mnist_preprocessed_subset(img_rows, img_cols, num_classes):
@@ -105,21 +91,10 @@ def load_mnist_preprocessed_subset(img_rows, img_cols, num_classes):
     x_train, y_train = x_train[train_filter], y_train[train_filter]
 
 
-    if K.image_data_format() == 'channels_first':  # Theano backend
-        x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
-        input_shape = (1, img_rows, img_cols)
-    else:
-        x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
-        input_shape = (img_rows, img_cols, 1)
-
-    # normalise:
-    x_train = x_train.astype('float32')
-    x_train /= 255
-
-    # convert class vectors to binary class matrices
-    y_train = to_categorical(y_train, num_classes)
+    (x_train, y_train), (_, _), input_shape = data_processing(img_rows, img_cols, num_classes, x_train, y_train)
 
     return (x_train, y_train), input_shape
+
 
 def mnist_test_set(img_rows, img_cols, num_classes):
     """
@@ -136,20 +111,33 @@ def mnist_test_set(img_rows, img_cols, num_classes):
     train_filter = np.where((y_train >= 5))
     x_train, y_train = x_train[train_filter], y_train[train_filter]
 
+    (x_train, y_train), (_, _), input_shape = data_processing(img_rows, img_cols, num_classes, x_train, y_train)
 
+    return (x_train, y_train), input_shape
+
+
+def data_processing(img_rows, img_cols, num_classes, x_train, y_train, x_test = "null", y_test = "null"):
     if K.image_data_format() == 'channels_first':  # Theano backend
         x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
+        if x_test != "null":
+            x_test = x_test.reshape(x_test.shape[0], 1, img_rows, img_cols)
         input_shape = (1, img_rows, img_cols)
     else:
         x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
+        if x_test != "null":
+            x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
         input_shape = (img_rows, img_cols, 1)
 
     # normalise:
     x_train = x_train.astype('float32')
     x_train /= 255
-
     # convert class vectors to binary class matrices
     y_train = to_categorical(y_train, num_classes)
 
-    return (x_train, y_train), input_shape
+    if x_test != "null" and y_test != "null":
+        x_test = x_test.astype('float32')
+        x_test /= 255
+        y_test = to_categorical(y_test, num_classes)
+
+    return (x_train, y_train), (x_test, y_test), input_shape
 

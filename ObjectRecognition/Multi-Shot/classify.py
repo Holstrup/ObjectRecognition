@@ -84,6 +84,7 @@ def run_classify(model_name_time):
         real_label_int = (np.where(y_test[100 + i] == 1)[0]).item()
         if real_label_int == predicted_label:
             correct += 1
-    print correct
+    print "Correct: " + str(correct)
 
+run_classify("12-02-2019-12:43")
 
