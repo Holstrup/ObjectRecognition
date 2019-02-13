@@ -7,7 +7,6 @@ from keras.optimizers import Adam
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 def load_model_from_file(filepath):
     """
     Loads CNN to global variable 'model'
