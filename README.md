@@ -17,3 +17,7 @@ pip install -r  requirements.txt
 
 
 ## References
+
+
+## Acknowledgements
+Thank you to [Uizard Technologies](https://uizard.io/) for guidance through the project and to professor Winther from Technocal University of Denmark
