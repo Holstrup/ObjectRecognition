@@ -8,17 +8,12 @@ The objective of this project would be to create a model that can perform one sh
 
 ## Setup
 
-Developed in Python 2.7
+Developed in Python 2
 
 ### Install Libraries Needed
-
 ```
 pip install -r  requirements.txt
 ```
 
 
 ## References
-
-
-## Acknowledgements
-Thank you to [Uizard Technologies](https://uizard.io/) for guidance through the project and to professor Winther from Technocal University of Denmark
