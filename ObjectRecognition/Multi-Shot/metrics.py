@@ -1,5 +1,4 @@
 from sklearn import metrics
-from sklearn import datasets
 import pandas as pd
 from sklearn.cluster import KMeans, AgglomerativeClustering, AffinityPropagation, SpectralClustering
 from database_actions import get_known_encodings
@@ -10,7 +9,6 @@ X = np.transpose(X)
 
 algorithms = []
 algorithms.append(KMeans(n_clusters=5, random_state=1))
-algorithms.append(AffinityPropagation())
 algorithms.append(SpectralClustering(n_clusters=5, random_state=1,
                                      affinity='nearest_neighbors'))
 algorithms.append(AgglomerativeClustering(n_clusters=5))
@@ -29,7 +27,6 @@ for algo in algorithms:
 results = pd.DataFrame(data=data, columns=['ARI', 'AMI', 'Homogenity',
                                            'Completeness', 'V-measure',
                                            'Silhouette'],
-                       index=['K-means', 'Affinity',
-                              'Spectral', 'Agglomerative'])
+                       index=['K-means', 'Spectral', 'Agglomerative'])
 
 results
