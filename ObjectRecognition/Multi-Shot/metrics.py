@@ -2,17 +2,18 @@ from sklearn import metrics
 from sklearn import datasets
 import pandas as pd
 from sklearn.cluster import KMeans, AgglomerativeClustering, AffinityPropagation, SpectralClustering
+from database_actions import get_known_encodings
+import numpy as np
 
-
-data = datasets.load_digits()
-X, y = data.data, data.target
+X, y =  get_known_encodings()
+X = np.transpose(X)
 
 algorithms = []
-algorithms.append(KMeans(n_clusters=10, random_state=1))
+algorithms.append(KMeans(n_clusters=5, random_state=1))
 algorithms.append(AffinityPropagation())
-algorithms.append(SpectralClustering(n_clusters=10, random_state=1,
+algorithms.append(SpectralClustering(n_clusters=5, random_state=1,
                                      affinity='nearest_neighbors'))
-algorithms.append(AgglomerativeClustering(n_clusters=10))
+algorithms.append(AgglomerativeClustering(n_clusters=5))
 
 data = []
 for algo in algorithms:
