@@ -23,9 +23,11 @@ def pca_full_mnist():
     plt.scatter(Zpca[:5000,0], Zpca[:5000,1], c=y_train[:5000], s=8, cmap='tab10')
     plt.gca().get_xaxis().set_ticklabels([])
     plt.gca().get_yaxis().set_ticklabels([])
+    plt.colorbar()
     plt.savefig("figures/pca_full")
     plt.show()
 
+# pca_full_mnist()
 
 
 def pca():
@@ -36,14 +38,24 @@ def pca():
     """
     matrix_encodings, labels =  get_known_encodings()
     matrix_encodings = np.transpose(matrix_encodings)
-    n_components = 3
+    n_components = 20
 
     x = (matrix_encodings - np.mean(matrix_encodings, 0)) / np.std(matrix_encodings, 0)
     pca = deco.PCA(n_components)
     x_r = pca.fit(x).transform(x)
+
+    plt.figure(figsize=(10, 7))
+    plt.plot(np.cumsum(pca.explained_variance_ratio_), color='k', lw=2)
+    plt.xlabel('Number of components')
+    plt.ylabel('Total explained variance')
+    plt.xlim(0, 20)
+    plt.yticks(np.arange(0, 1.1, 0.1))
+    plt.axvline(6.5, c='b')
+    plt.axhline(0.9, c='r')
+    plt.savefig("figures/pca_explained_variance")
+    plt.show();
+
     return x_r, labels
-
-
 
 def plot3D(data, labels):
     """
@@ -103,7 +115,7 @@ def plot2D(data, labels):
     plt.savefig("figures/pca_current_encodings_2D")
     plt.show()
 
-pca_data, db_labels = pca()
-plot3D(pca_data, db_labels)
-plot2D(pca_data, db_labels)
+# pca_data, db_labels = pca()
+# plot3D(pca_data, db_labels)
+# plot2D(pca_data, db_labels)
 

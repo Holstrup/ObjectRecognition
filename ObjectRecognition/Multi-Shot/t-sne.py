@@ -45,7 +45,7 @@ def plot_tsne(np_train_xs, np_train_ys, dim_y):
     plt.savefig("figures/tsne_full")
     plt.show()
 
-np_train_xs, np_train_ys, dim_y = t_sne_full_mnist()
+# np_train_xs, np_train_ys, dim_y = t_sne_full_mnist()
 # plot_tsne(np_train_xs, np_train_ys, dim_y)
 
 def t_sne():
@@ -119,6 +119,6 @@ def plot2D(data, labels):
     plt.savefig("figures/tsne_current_encodings_2D")
     plt.show()
 
-pca_data, db_labels = t_sne()
-plot3D(pca_data, db_labels)
-plot2D(pca_data, db_labels)
+# pca_data, db_labels = t_sne()
+# plot3D(pca_data, db_labels)
+# plot2D(pca_data, db_labels)
