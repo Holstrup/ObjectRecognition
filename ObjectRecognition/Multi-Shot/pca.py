@@ -23,6 +23,7 @@ def pca_full_mnist():
     plt.scatter(Zpca[:5000,0], Zpca[:5000,1], c=y_train[:5000], s=8, cmap='tab10')
     plt.gca().get_xaxis().set_ticklabels([])
     plt.gca().get_yaxis().set_ticklabels([])
+    plt.savefig("figures/pca_full")
     plt.show()
 
 
@@ -44,7 +45,7 @@ def pca():
 
 
 
-def plot(data, labels):
+def plot3D(data, labels):
     """
     Plots PCA with Labels
 
@@ -75,11 +76,34 @@ def plot(data, labels):
     ax.legend()
     plt.xlabel("X")
     plt.ylabel("Z")
-
+    plt.savefig("figures/pca_current_encodings_3D")
     plt.show()
 
+def plot2D(data, labels):
+    """
+    Plots PCA with Labels
 
+    :param data: PCA Data
+    :param labels: Labels
+    """
+    scatter_x = data[:, 0]
+    scatter_y = data[:, 1]
+    scatter_z = data[:, 2]
+    group = map(int, labels)
+    cdict = {5: 'red', 6: 'blue', 7: 'green', 8: 'black', 9: 'orange'}
+
+    ax = plt.axes()
+    for g in np.unique(group):
+        ix = np.where(group == g)
+        ax.scatter(scatter_x[ix], scatter_y[ix], c=cdict[g], label=g, s=100)
+    ax.legend()
+    plt.title("PCA for the encodings saved in the database")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.savefig("figures/pca_current_encodings_2D")
+    plt.show()
 
 pca_data, db_labels = pca()
-plot(pca_data, db_labels)
+plot3D(pca_data, db_labels)
+plot2D(pca_data, db_labels)
 
