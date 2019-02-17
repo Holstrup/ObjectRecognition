@@ -50,4 +50,4 @@ pip install -r  requirements.txt
 
 
 ## Acknowledgements
-Thank you to [Uizard Technologies](https://uizard.io/) for guidance through the project and to professor Winther from Technocal University of Denmark
+Thank you to [Uizard Technologies](https://uizard.io/) for guidance through the project and to professor [Ole Winther](https://www.dtu.dk/service/telefonbog/person?id=10167&cpid=109334&tab=1) from the [Technical University of Denmark](https://www.dtu.dk/)
