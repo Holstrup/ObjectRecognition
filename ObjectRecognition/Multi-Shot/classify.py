@@ -1,5 +1,7 @@
 from keras import Model
 
+from keras import Model
+
 from model import mnist_test_set
 from knn import new_knn_function
 import database_actions
