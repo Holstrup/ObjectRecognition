@@ -1,12 +1,15 @@
+from keras import Model
+
+from keras import Model
+
 from model import mnist_test_set
-from knn import knn_function, new_knn_function
+from knn import new_knn_function
 import database_actions
 from keras.models import load_model
 from keras.losses import categorical_crossentropy
 from keras.optimizers import Adam
 import numpy as np
 import matplotlib.pyplot as plt
-
 
 def load_model_from_file(filepath):
     """
@@ -17,6 +20,17 @@ def load_model_from_file(filepath):
     global model
     model = load_model(filepath)
     model.summary()
+
+def load_imagenet_model(filepath):
+    """
+    Loads fine-tuned imagenet to global variable 'imagenet_model'
+
+    :param filepath: filepath to model file:
+    """
+    global imagenet_model
+    model = load_model(filepath)
+    imagenet_model = Model(input=model.layers[0].input, output=model.layers[-2].output)
+    imagenet_model.summary()
 
 
 def show_image(image):
@@ -65,7 +79,7 @@ def run_classify(model_name_time):
     :param model_name_time: model name
     """
     database_actions.reinitialize_table()
-    load_model_from_file("models/model" + model_name_time)
+    load_model_from_file("models/" + model_name_time)
     model.compile(loss=categorical_crossentropy, optimizer=Adam(), metrics=['accuracy'])
     model.summary()
 
@@ -88,4 +102,18 @@ def run_classify(model_name_time):
     print "Correct: " + str(correct)
 
 
-run_classify("12-02-2019-14:17")
+def run_classify_imagenet(model_name_time):
+    """
+    Runs a test of the fine-tuned imagenet network
+
+    :param model_name_time: model name
+    """
+    database_actions.reinitialize_table()
+    load_model_from_file("models/" + model_name_time)
+    model.compile(optimizer=Adam(lr=0.0001), loss='categorical_crossentropy', metrics=['accuracy'])
+    model.summary()
+
+    #TODO: Load Data
+
+    #TODO: Test
+
