@@ -36,7 +36,7 @@ model.layers.pop()
 for layer in model.layers:
     layer.trainable = False
 last = model.layers[-1].output
-x = Dense(128, activation="softmax")(last)
+x = Dense(512, activation="softmax")(last)
 x = Dense(len(classes), activation="softmax")(x)
 finetuned_model = Model(model.input, x)
 finetuned_model.compile(optimizer=Adam(lr=0.0001), loss='categorical_crossentropy', metrics=['accuracy'])
