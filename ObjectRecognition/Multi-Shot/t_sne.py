@@ -119,6 +119,6 @@ def plot2D(data, labels):
     plt.savefig("figures/tsne_current_encodings_2D")
     plt.show()
 
-# pca_data, db_labels = t_sne()
-# plot3D(pca_data, db_labels)
-# plot2D(pca_data, db_labels)
+pca_data, db_labels = t_sne()
+plot3D(pca_data, db_labels)
+plot2D(pca_data, db_labels)

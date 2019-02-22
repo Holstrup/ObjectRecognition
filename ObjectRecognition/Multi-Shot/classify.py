@@ -101,6 +101,7 @@ def run_classify(model_name_time):
             correct += 1
     print "Correct: " + str(correct)
 
+run_classify("model18-02-2019-20:51")
 
 def run_classify_imagenet():
     """
@@ -130,4 +131,4 @@ def run_classify_imagenet():
         database_actions.add_encoding(encoding, label)
 
 
-run_classify_imagenet()
+# run_classify_imagenet()

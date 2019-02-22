@@ -1,16 +1,16 @@
 from time import time
-
+import sklearn.decomposition as deco
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import offsetbox
+from mpl_toolkits import mplot3d
+from database_actions import get_known_encodings
 from sklearn import (manifold, datasets, decomposition, ensemble,
                      discriminant_analysis, random_projection)
 
-digits = datasets.load_digits(n_class=6)
-X = digits.data
-y = digits.target
+digits = get_known_encodings()
+X, y = get_known_encodings()
 n_samples, n_features = X.shape
-n_neighbors = 30
+n_neighbors = 21
 
 
 #----------------------------------------------------------------------
@@ -20,80 +20,36 @@ def plot_embedding(X, title=None):
     X = (X - x_min) / (x_max - x_min)
 
     plt.figure()
-    ax = plt.subplot(111)
-    for i in range(X.shape[0]):
-        plt.text(X[i, 0], X[i, 1], str(y[i]),
-                 color=plt.cm.Set1(y[i] / 10.),
-                 fontdict={'weight': 'bold', 'size': 9})
+    scatter_x = X[:, 0]
+    scatter_y = X[:, 1]
+    group = map(int, y)
+    cdict = {5: 'red', 6: 'blue', 7: 'green', 8: 'black', 9: 'orange'}
 
-    if hasattr(offsetbox, 'AnnotationBbox'):
-        # only print thumbnails with matplotlib > 1.0
-        shown_images = np.array([[1., 1.]])  # just something big
-        for i in range(X.shape[0]):
-            dist = np.sum((X[i] - shown_images) ** 2, 1)
-            if np.min(dist) < 4e-3:
-                # don't show points that are too close
-                continue
-            shown_images = np.r_[shown_images, [X[i]]]
-            imagebox = offsetbox.AnnotationBbox(
-                offsetbox.OffsetImage(digits.images[i], cmap=plt.cm.gray_r),
-                X[i])
-            ax.add_artist(imagebox)
-    plt.xticks([]), plt.yticks([])
+    ax = plt.axes()
+    for g in np.unique(group):
+        ix = np.where(group == g)
+        ax.scatter(scatter_x[ix], scatter_y[ix], c=cdict[g], label=g, s=100)
+    ax.legend()
+    plt.xlabel("X")
+    plt.ylabel("Y")
+
     if title is not None:
         plt.title(title)
 
-
-#----------------------------------------------------------------------
-# Plot images of the digits
-n_img_per_row = 20
-img = np.zeros((10 * n_img_per_row, 10 * n_img_per_row))
-for i in range(n_img_per_row):
-    ix = 10 * i + 1
-    for j in range(n_img_per_row):
-        iy = 10 * j + 1
-        img[ix:ix + 8, iy:iy + 8] = X[i * n_img_per_row + j].reshape((8, 8))
-
-plt.imshow(img, cmap=plt.cm.binary)
-plt.xticks([])
-plt.yticks([])
-plt.title('A selection from the 64-dimensional digits dataset')
-
-
-#----------------------------------------------------------------------
-# Random 2D projection using a random unitary matrix
-print("Computing random projection")
-rp = random_projection.SparseRandomProjection(n_components=2, random_state=42)
-X_projected = rp.fit_transform(X)
-plot_embedding(X_projected, "Random Projection of the digits")
-plt.savefig("figures/Reduction/random")
-
-#----------------------------------------------------------------------
-# Projection on to the first 2 principal components
-
-print("Computing PCA projection")
-t0 = time()
-X_pca = decomposition.TruncatedSVD(n_components=2).fit_transform(X)
-plot_embedding(X_pca,
-               "Principal Components projection of the digits (time %.2fs)" %
-               (time() - t0))
-plt.savefig("figures/Reduction/pca")
-
-#----------------------------------------------------------------------
-# Projection on to the first 2 linear discriminant components
-
+# #----------------------------------------------------------------------
+# # Projection on to the first 2 priciple components
 print("Computing Linear Discriminant Analysis projection")
-X2 = X.copy()
-X2.flat[::X.shape[1] + 1] += 0.01  # Make X invertible
 t0 = time()
-X_lda = discriminant_analysis.LinearDiscriminantAnalysis(n_components=2).fit_transform(X2, y)
-plot_embedding(X_lda,
+x = (X - np.mean(X, 0)) / np.std(X, 0)
+pca = deco.PCA(n_components = 2)
+x_pca = pca.fit(x).transform(x)
+plot_embedding(x_pca,
                "Linear Discriminant projection of the digits (time %.2fs)" %
                (time() - t0))
-plt.savefig("figures/Reduction/pca_discriminant")
+plt.savefig("figures/Reduction_OurDataSet/pca_discriminant")
 
-#----------------------------------------------------------------------
-# Isomap projection of the digits dataset
+# #----------------------------------------------------------------------
+# # Isomap projection of the digits dataset
 print("Computing Isomap embedding")
 t0 = time()
 X_iso = manifold.Isomap(n_neighbors, n_components=2).fit_transform(X)
@@ -101,10 +57,10 @@ print("Done.")
 plot_embedding(X_iso,
                "Isomap projection of the digits (time %.2fs)" %
                (time() - t0))
-plt.savefig("figures/Reduction/isomap")
+plt.savefig("figures/Reduction_OurDataSet/isomap")
 
-#----------------------------------------------------------------------
-# Locally linear embedding of the digits dataset
+# #----------------------------------------------------------------------
+# # Locally linear embedding of the digits dataset
 print("Computing LLE embedding")
 clf = manifold.LocallyLinearEmbedding(n_neighbors, n_components=2,
                                       method='standard')
@@ -114,10 +70,10 @@ print("Done. Reconstruction error: %g" % clf.reconstruction_error_)
 plot_embedding(X_lle,
                "Locally Linear Embedding of the digits (time %.2fs)" %
                (time() - t0))
-plt.savefig("figures/Reduction/local_linear_embedding")
+plt.savefig("figures/Reduction_OurDataSet/local_linear_embedding")
 
-#----------------------------------------------------------------------
-# Modified Locally linear embedding of the digits dataset
+# #----------------------------------------------------------------------
+# # Modified Locally linear embedding of the digits dataset
 print("Computing modified LLE embedding")
 clf = manifold.LocallyLinearEmbedding(n_neighbors, n_components=2,
                                       method='modified')
@@ -127,10 +83,10 @@ print("Done. Reconstruction error: %g" % clf.reconstruction_error_)
 plot_embedding(X_mlle,
                "Modified Locally Linear Embedding of the digits (time %.2fs)" %
                (time() - t0))
-plt.savefig("figures/Reduction/modified_local_linear_embedding")
+plt.savefig("figures/Reduction_OurDataSet/modified_local_linear_embedding")
 
-#----------------------------------------------------------------------
-# HLLE embedding of the digits dataset
+# #----------------------------------------------------------------------
+# # HLLE embedding of the digits dataset
 print("Computing Hessian LLE embedding")
 clf = manifold.LocallyLinearEmbedding(n_neighbors, n_components=2,
                                       method='hessian')
@@ -140,11 +96,11 @@ print("Done. Reconstruction error: %g" % clf.reconstruction_error_)
 plot_embedding(X_hlle,
                "Hessian Locally Linear Embedding of the digits (time %.2fs)" %
                (time() - t0))
-plt.savefig("figures/Reduction/hlle")
+plt.savefig("figures/Reduction_OurDataSet/hlle")
 
 
-#----------------------------------------------------------------------
-# LTSA embedding of the digits dataset
+# #----------------------------------------------------------------------
+# # LTSA embedding of the digits dataset
 print("Computing LTSA embedding")
 clf = manifold.LocallyLinearEmbedding(n_neighbors, n_components=2,
                                       method='ltsa')
@@ -154,10 +110,10 @@ print("Done. Reconstruction error: %g" % clf.reconstruction_error_)
 plot_embedding(X_ltsa,
                "Local Tangent Space Alignment of the digits (time %.2fs)" %
                (time() - t0))
-plt.savefig("figures/Reduction/ltsa")
+plt.savefig("figures/Reduction_OurDataSet/ltsa")
 
-#----------------------------------------------------------------------
-# MDS  embedding of the digits dataset
+# #----------------------------------------------------------------------
+# # MDS  embedding of the digits dataset
 print("Computing MDS embedding")
 clf = manifold.MDS(n_components=2, n_init=1, max_iter=100)
 t0 = time()
@@ -166,10 +122,10 @@ print("Done. Stress: %f" % clf.stress_)
 plot_embedding(X_mds,
                "MDS embedding of the digits (time %.2fs)" %
                (time() - t0))
-plt.savefig("figures/Reduction/mds")
+plt.savefig("figures/Reduction_OurDataSet/mds")
 
-#----------------------------------------------------------------------
-# Random Trees embedding of the digits dataset
+# #----------------------------------------------------------------------
+# # Random Trees embedding of the digits dataset
 print("Computing Totally Random Trees embedding")
 hasher = ensemble.RandomTreesEmbedding(n_estimators=200, random_state=0,
                                        max_depth=5)
@@ -181,10 +137,10 @@ X_reduced = pca.fit_transform(X_transformed)
 plot_embedding(X_reduced,
                "Random forest embedding of the digits (time %.2fs)" %
                (time() - t0))
-plt.savefig("figures/Reduction/random_trees")
+plt.savefig("figures/Reduction_OurDataSet/random_trees")
 
-#----------------------------------------------------------------------
-# Spectral embedding of the digits dataset
+# #----------------------------------------------------------------------
+# # Spectral embedding of the digits dataset
 print("Computing Spectral embedding")
 embedder = manifold.SpectralEmbedding(n_components=2, random_state=0,
                                       eigen_solver="arpack")
@@ -194,7 +150,7 @@ X_se = embedder.fit_transform(X)
 plot_embedding(X_se,
                "Spectral embedding of the digits (time %.2fs)" %
                (time() - t0))
-plt.savefig("figures/Reduction/spectral")
+plt.savefig("figures/Reduction_OurDataSet/spectral")
 
 #----------------------------------------------------------------------
 # t-SNE embedding of the digits dataset
@@ -208,5 +164,5 @@ plot_embedding(X_tsne,
                "t-SNE embedding of the digits (time %.2fs)" %
                (time() - t0))
 
-plt.savefig("figures/Reduction/tsne")
+plt.savefig("figures/Reduction_OurDataSet/tsne")
 plt.show()
