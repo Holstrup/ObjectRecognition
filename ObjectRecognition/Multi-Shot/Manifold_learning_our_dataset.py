@@ -97,17 +97,6 @@ plt.savefig("figures/Reduction_OurDataSet/mds")
 
 
 
-# Random Trees embedding of the digits dataset
-print("Running Totally Random Trees embedding")
-rt = ensemble.RandomTreesEmbedding(n_estimators=200, random_state=0, max_depth=5)
-X_transformed = rt.fit_transform(X)
-pca = decomposition.TruncatedSVD(n_components=2)
-X_reduced = pca.fit_transform(X_transformed)
-plot_2D(X_reduced, "Random forest embedding of the digits")
-plt.savefig("figures/Reduction_OurDataSet/random_trees")
-
-
-
 # Spectral embedding of the digits dataset
 print("Running Spectral embedding")
 se = manifold.SpectralEmbedding(n_components=2, random_state=0, eigen_solver="arpack")
