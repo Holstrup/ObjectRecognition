@@ -34,6 +34,46 @@ All the metrics described below are implemented in sklearn.metrics.
 - The higher the silhouette value is, the better the results from clustering (the range is [-1,1]).
 - With the help of silhouette, we can identify the optimal number of clusters  k  (if we don't know it already from the data) by taking the number of clusters that maximizes the silhouette coefficient.
 
+## Optimizations
+
+High-dimensional datasets can be very difficult to visualize. While data in two or three dimensions can be plotted to show the inherent structure of the data, equivalent high-dimensional plots are much less intuitive. To aid visualization of the structure of a dataset, the dimension must be reduced in some way.
+
+### Manifold learning (generalize linear frameworks to be sensitive to non-linear structure in data):
+
+#### Isomap
+Isomap can be viewed as an extension of Multi-dimensional Scaling (MDS) or Kernel PCA. Isomap seeks a lower-dimensional embedding which maintains geodesic distances between all points.
+
+#### Local linear embedding
+Locally linear embedding (LLE) seeks a lower-dimensional projection of the data which preserves distances within local neighborhoods. It can be thought of as a series of local Principal Component Analyses which are globally compared to find the best non-linear embedding.
+
+#### Modified local linear embedding
+One well-known issue with LLE is the regularization problem. When the number of neighbors is greater than the number of input dimensions, the matrix defining each local neighborhood is rank-deficient. One method to address the regularization problem is to use multiple weight vectors in each neighborhood. This is the essence of modified locally linear embedding (MLLE).
+
+#### Hessian eigenmapping
+Hessian Eigenmapping (known also as Hessian-based LLE) is another method of solving the regularization problem of LLE. It revolves around a hessian-based quadratic form at each neighborhood which is used to recover the locally linear structure. Though other implementations note its poor scaling with data size, sklearn implements some algorithmic improvements which make its cost comparable to that of other LLE variants for small output dimension.
+
+#### Spectral embedding
+Spectral Embedding is an approach to calculating a non-linear embedding. Scikit-learn implements Laplacian Eigenmaps, which finds a low dimensional representation of the data using a spectral decomposition of the graph Laplacian. The graph generated can be considered as a discrete approximation of the low dimensional manifold in the high dimensional space. Minimization of a cost function based on the graph ensures that points close to each other on the manifold are mapped close to each other in the low dimensional space, preserving local distances.
+
+#### Local Tangent Space Alignment
+Though not technically a variant of LLE, Local tangent space alignment (LTSA) is algorithmically similar enough to LLE that it can be put in this category. Rather than focusing on preserving neighborhood distances as in LLE, LTSA seeks to characterize the local geometry at each neighborhood via its tangent space and performs a global optimization to align these local tangent spaces to learn the embedding.
+
+#### Multi-dimensional scaling (MDS)
+Multi-dimensional scaling (MDS) seeks a low-dimensional representation of the data in which the distances respect well the distances in the original high-dimensional space. In general, is a technique used for analyzing similarity or dissimilarity data. MDS attempts to model similarity or dissimilarity data as distances in a geometric space.
+
+#### t-distributed Stochastic Neighbor Embedding (t-SNE)
+While Isomap, LLE and variants are best suited to unfold a single continuous low dimensional manifold, t-SNE will focus on the local structure of the data and will tend to extract clustered local groups of samples as highlighted on the S-curve example. This ability to group samples based on the local structure might be beneficial to visually disentangle a dataset that comprises several manifolds at once as is the case in the digits dataset.
+
+#### Random forest embedding
+A forest embedding is a way to represent a feature space using a random forest. In our case, we are dealing with an unsupervised transformation of a dataset to a high-dimensional sparse representation. A data point is coded according to which leaf of each tree it is sorted into. Using a one-hot encoding of the leaves, this leads to a binary coding with as many ones as there are trees in the forest.
+
+### PCA (linear framework not sensitive to non-linear structure in data):
+Principal Component Analysis (PCA) is a dimension-reduction tool that can be used to reduce a large set of variables to a small set that still contains most of the information in the large set.
+Objectives of principal component analysis:
+1. PCA reduces attribute space from a larger number of variables to a smaller number of factors and as such is a "non-dependent" procedure (that is, it does not assume a dependent variable is specified).
+2. PCA is a dimensionality reduction or data compression method. The goal is dimension reduction and there is no guarantee that the dimensions are interpretable (a fact often not appreciated by (amateur) statisticians).
+3. To select a subset of variables from a larger set, based on which original variables have the highest correlations with the principal component.
+
 
 ## Setup
 
