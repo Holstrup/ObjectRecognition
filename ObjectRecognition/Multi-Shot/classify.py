@@ -87,10 +87,10 @@ def run_classify(model_name_time):
 
 
     #20 samples in the database
-    build_db(x_test[0:20], y_test[0:20])
+    build_db(x_test[0:100], y_test[0:100])
 
     #Testing on 1000 (different) samples
-    data = try_classification(x_test[100:1100])
+    data = try_classification(x_test[100:2100])
 
     correct = 0
 
@@ -101,7 +101,7 @@ def run_classify(model_name_time):
             correct += 1
     print "Correct: " + str(correct)
 
-run_classify("model18-02-2019-20:51")
+run_classify("model23-02-2019-12:59")
 
 def run_classify_imagenet():
     """

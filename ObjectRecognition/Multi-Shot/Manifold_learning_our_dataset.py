@@ -9,14 +9,16 @@ from sklearn import (manifold, datasets, decomposition, ensemble,
 
 digits = get_known_encodings()
 X, y = get_known_encodings()
+X = np.transpose(X)
 n_samples, n_features = X.shape
 n_neighbors = 21
 
 #----------------------------------------------------------------------
 # Scale and visualize the embedding vectors
 def plot_embedding(X, title=None):
-    x_min, x_max = np.min(X, 0), np.max(X, 0)
-    X = (X - x_min) / (x_max - x_min)
+    # x_min, x_max = np.min(X, 0), np.max(X, 0)
+    # X = (X - x_min) / (x_max - x_min)
+    X = (X - np.mean(X, 0)) / np.std(X, 0)
 
     plt.figure()
     scatter_x = X[:, 0]
@@ -36,11 +38,11 @@ def plot_embedding(X, title=None):
         plt.title(title)
 
 # #----------------------------------------------------------------------
-# # Projection on to the first 2 priciple components
+# # Projection on to the first 12 priciple components
 print("Computing Linear Discriminant Analysis projection")
 t0 = time()
 x = (X - np.mean(X, 0)) / np.std(X, 0)
-pca = deco.PCA(n_components = 2)
+pca = deco.PCA(n_components = 12)
 x_pca = pca.fit(x).transform(x)
 plot_embedding(x_pca,
                "Linear Discriminant projection of the digits (time %.2fs)" %

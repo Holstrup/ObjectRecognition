@@ -30,4 +30,4 @@ def run_train(n_epochs, model_name="null"):
     CNN.summary()
     CNN.save("models/model" + name)
 
-run_train(3)
+run_train(5)
