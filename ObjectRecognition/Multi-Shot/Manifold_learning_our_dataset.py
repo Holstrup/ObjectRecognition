@@ -45,7 +45,7 @@ x = (X - np.mean(X, 0)) / np.std(X, 0)
 pca = deco.PCA(n_components = 12)
 x_pca = pca.fit(x).transform(x)
 plot_embedding(x_pca,
-               "Linear Discriminant projection of the digits (time %.2fs)" %
+               "Principal Components projection of the digits (time %.2fs)" %
                (time() - t0))
 plt.savefig("figures/Reduction_OurDataSet/pca_discriminant")
 
