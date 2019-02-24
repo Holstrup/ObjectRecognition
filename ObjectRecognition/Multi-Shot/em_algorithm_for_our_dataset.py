@@ -65,7 +65,7 @@ plt.figure(1)
 plt.plot(log_likelihood)
 plt.xlabel('Iterations')
 plt.ylabel('Log-likelihood')
-plt.savefig("figures/em_log_likelihood")
+plt.savefig("figures/em_loglikelihood")
 
 ## Plot data
 plt.figure(2)
@@ -74,5 +74,5 @@ plt.plot(data[:, 0], data[:, 1], '.')
 for k in range(K):
     plot_normal(mu[k], Sigma[k])
 
-plt.savefig("figures/em_algorithm")
+plt.savefig("figures/em_algorithm_clusters")
 plt.show()
