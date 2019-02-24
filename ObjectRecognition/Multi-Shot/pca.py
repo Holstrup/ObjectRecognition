@@ -6,30 +6,6 @@ from database_actions import get_known_encodings
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 
-def pca_full_mnist():
-    """
-    Generates plot of PCA of entire MNist dataset
-
-    """
-    (x_train, y_train), (_, _) = mnist.load_data()
-    x_train = x_train.reshape(60000, 784) / 255
-
-    mu = x_train.mean(axis=0)
-    U,s,V = np.linalg.svd(x_train - mu, full_matrices=False)
-    Zpca = np.dot(x_train - mu, V.transpose())
-    Rpca = np.dot(Zpca[:,:2], V[:2,:]) + mu
-
-    plt.title('PCA')
-    plt.scatter(Zpca[:5000,0], Zpca[:5000,1], c=y_train[:5000], s=8, cmap='tab10')
-    plt.gca().get_xaxis().set_ticklabels([])
-    plt.gca().get_yaxis().set_ticklabels([])
-    plt.colorbar()
-    plt.savefig("figures/pca_full")
-    plt.show()
-
-# pca_full_mnist()
-
-
 def pca():
     """
     Does PCA of dataset in the database
