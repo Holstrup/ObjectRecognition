@@ -91,7 +91,7 @@ def plot2D(data, labels):
     plt.savefig("figures/pca_current_encodings_2D")
     plt.show()
 
-pca_data, db_labels = pca()
-plot3D(pca_data, db_labels)
-plot2D(pca_data, db_labels)
+# pca_data, db_labels = pca()
+# plot3D(pca_data, db_labels)
+# plot2D(pca_data, db_labels)
 
