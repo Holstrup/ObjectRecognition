@@ -1,6 +1,6 @@
 import math, os
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.layers import Dense
+from keras.layers import Dense, UpSampling2D, UpSampling1D
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
@@ -36,7 +36,8 @@ model.layers.pop()
 for layer in model.layers:
     layer.trainable = False
 last = model.layers[-1].output
-x = Dense(512, activation="relu")(last)
+x = Dense(128, activation="relu")(last)
+x = UpSampling1D(size=4)(x)
 x = Dense(len(classes), activation="softmax")(x)
 finetuned_model = Model(model.input, x)
 finetuned_model.compile(optimizer=Adam(lr=0.0001), loss='categorical_crossentropy', metrics=['accuracy'])

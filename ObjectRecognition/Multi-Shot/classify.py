@@ -29,7 +29,7 @@ def load_imagenet_model(filepath):
     """
     global imagenet_model
     model = load_model(filepath)
-    imagenet_model = Model(input=model.layers[0].input, output=model.layers[-2].output)
+    imagenet_model = Model(input=model.layers[0].input, output=model.layers[-4].output)
     imagenet_model.summary()
 
 
@@ -101,7 +101,7 @@ def run_classify(model_name_time):
             correct += 1
     print "Correct: " + str(correct)
 
-run_classify("model23-02-2019-12:59")
+#run_classify("model23-02-2019-12:59")
 
 def run_classify_imagenet():
     """
@@ -110,8 +110,9 @@ def run_classify_imagenet():
     :param model_name_time: model name
     """
     database_actions.reinitialize_table()
+    DD = "Dataset/test/"
     TEST_DIR = "Dataset/test/greek/"
-    MODEL_NAME = "resnet50_fully_trained"
+    MODEL_NAME = "resnet50-4epochs"
     NUM_CLASSES = 10
 
 
@@ -123,12 +124,17 @@ def run_classify_imagenet():
 
 
     for imgFile in file_list:
-        img = image.load_img(TEST_DIR + imgFile, target_size=(224, 224))
-        img = image.img_to_array(img)
-        img = np.expand_dims(img, axis=0)
-        encoding = imagenet_model.predict(img, batch_size=1)
-        label = imgFile[0]
-        database_actions.add_encoding(encoding, label)
+        if imgFile[0] == ".":
+            pass
+        else:
+            img = image.load_img(TEST_DIR + imgFile, target_size=(224, 224))
+            img = image.img_to_array(img)
+            img = np.expand_dims(img, axis=0)
+            encoding = imagenet_model.predict(img, batch_size=1)
+            label = imgFile[0]
+            database_actions.add_encoding(encoding, label)
 
 
-# run_classify_imagenet()
+
+
+run_classify_imagenet()
