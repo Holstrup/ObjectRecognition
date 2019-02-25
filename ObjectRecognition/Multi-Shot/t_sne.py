@@ -16,7 +16,7 @@ def t_sne():
     n_components = 3
 
     x = (matrix_encodings - np.mean(matrix_encodings, 0)) / np.std(matrix_encodings, 0)
-    tsne = TSNE(n_components)
+    tsne = TSNE(n_components, init='pca', random_state=0)
     x_r = tsne.fit_transform(x)
     return x_r, labels
 
@@ -54,30 +54,5 @@ def plot3D(data, labels):
     plt.savefig("figures/tsne_current_encodings_3D")
     plt.show()
 
-def plot2D(data, labels):
-    """
-    Plots PCA with Labels
-
-    :param data: PCA Data
-    :param labels: Labels
-    """
-    scatter_x = data[:, 0]
-    scatter_y = data[:, 1]
-    scatter_z = data[:, 2]
-    group = map(int, labels)
-    cdict = {5: 'red', 6: 'blue', 7: 'green', 8: 'black', 9: 'orange'}
-
-    ax = plt.axes()
-    for g in np.unique(group):
-        ix = np.where(group == g)
-        ax.scatter(scatter_x[ix], scatter_y[ix], c=cdict[g], label=g, s=100)
-    ax.legend()
-    plt.title("TSNE for the encodings saved in the database")
-    plt.xlabel("X")
-    plt.ylabel("Y")
-    plt.savefig("figures/tsne_current_encodings_2D")
-    plt.show()
-
 pca_data, db_labels = t_sne()
 plot3D(pca_data, db_labels)
-plot2D(pca_data, db_labels)

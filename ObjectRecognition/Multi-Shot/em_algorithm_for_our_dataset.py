@@ -22,7 +22,7 @@ data = pca.fit(x).transform(x)
 N, D = data.shape
 
 ## Initialize parameters
-K = 5; # try with different parameters
+K = 5; # clusters
 mu = []
 Sigma = []
 pi_k = np.ones(K)/K
@@ -33,18 +33,16 @@ for _ in range(K):
   Sigma.append(np.eye(D))
 
 ## Loop until you're happy
-max_iter = 3; # XXX: you should find a better convergence check than a max iteration counter
+max_iter = 3;
 log_likelihood = np.zeros(max_iter)
 respons = np.zeros((K, N)) # KxN
 for iteration in range(max_iter):
   ## Compute responsibilities
-  # XXX: FILL ME IN!
   for k in range(K):
     respons[k] = pi_k[k] * multivariate_normal.pdf(data, mean=mu[k], cov=Sigma[k])
   respons /= np.sum(respons, axis=0)
 
   ## Update parameters
-  # XXX: FILL ME IN!
   for k in range(K):
       respons_k = respons[k]  # N
       Nk = np.sum(respons_k)  # scalar
@@ -54,7 +52,6 @@ for iteration in range(max_iter):
       pi_k[k] = Nk / N
 
   ## Compute log-likelihood of data
-  # log_likelihood[iteration] = -1 # XXX: DO THIS CORRECTLY
   L = 0
   for k in range(K):
       L += pi_k[k] * multivariate_normal.pdf(data, mean=mu[k], cov=Sigma[k])
