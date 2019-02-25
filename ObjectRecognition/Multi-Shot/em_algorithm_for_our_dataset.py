@@ -33,7 +33,7 @@ for _ in range(K):
   Sigma.append(np.eye(D))
 
 ## Loop until you're happy
-max_iter = 3;
+max_iter = 100;
 log_likelihood = np.zeros(max_iter)
 respons = np.zeros((K, N)) # KxN
 for iteration in range(max_iter):
