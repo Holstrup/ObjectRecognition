@@ -18,15 +18,17 @@ def plot_2D(X, title=None):
     scatter_x = X[:, 0]
     scatter_y = X[:, 1]
     group = map(int, y)
-    cdict = {5: 'red', 6: 'blue', 7: 'green', 8: 'black', 9: 'orange'}
+    cdict = {1: 'red', 2: 'blue', 3: 'green', 4: 'black', 5: 'orange'}
 
     ax = plt.axes()
     for g in np.unique(group):
         ix = np.where(group == g)
+        scatter_x[ix], scatter_y[ix]
         ax.scatter(scatter_x[ix], scatter_y[ix], c=cdict[g], label=g, s=100)
     ax.legend()
     plt.xlabel("X")
     plt.ylabel("Y")
+    
 
     if title is not None:
         plt.title(title)

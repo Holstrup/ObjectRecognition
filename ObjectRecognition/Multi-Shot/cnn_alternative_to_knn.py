@@ -1,39 +1,56 @@
-from keras import Sequential
 from database_actions import get_known_encodings
-from keras.optimizers import Adadelta
-from keras.losses import categorical_crossentropy
-from keras.layers import Dense, Dropout, Activation
-from keras.models import Model
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Flatten, MaxPooling2D, Conv2D
+from keras.utils import np_utils
+import numpy as np
 
-def cov_network(num_classes, input_shape):
-    model = Sequential()
 
-    model.add(Dense(128, input_shape=input_shape))
-    model.add(Dropout(0.2))
-    model.add(Activation('relu'))
+def cov_network(num_classes):
 
-    model.add(Dense(50))
-    model.add(Dropout(0.2))
-    model.add(Activation('relu'))
+    cnn = Sequential()
+    cnn.add(Conv2D(32, (3, 1), padding="same", activation="relu", input_shape=(1, 128, 1)))
+    cnn.add(Conv2D(32, (3, 1), padding="same", activation="relu"))
+    cnn.add(MaxPooling2D(pool_size=(1, 1)))
 
-    model.add(Dense(num_classes))
-    model.add(Activation('softmax'))
+    cnn.add(Conv2D(64, (3, 1), padding="same", activation="relu"))
+    cnn.add(Conv2D(64, (3, 1), padding="same", activation="relu"))
+    cnn.add(Conv2D(64, (3, 1), padding="same", activation="relu"))
+    cnn.add(MaxPooling2D(pool_size=(1, 1)))
 
-    model.summary()
-    model.compile(loss=categorical_crossentropy, optimizer=Adadelta(), metrics=['accuracy'])
+    cnn.add(Conv2D(32, (3, 1), padding="same", activation="relu"))
+    cnn.add(Conv2D(32, (3, 1), padding="same", activation="relu"))
+    cnn.add(Conv2D(32, (3, 1), padding="same", activation="relu"))
+    cnn.add(MaxPooling2D(pool_size=(1, 1)))
 
-    return model
+    cnn.add(Flatten())
+    cnn.add(Dense(1024, activation="relu"))
+    cnn.add(Dropout(0.5))
+    cnn.add(Dense(num_classes, activation="softmax"))
 
-def run_conv_network(n_epochs):
-    batch_size = 128
-    num_classes = 5
-    epochs = n_epochs
-    input_shape = (128,20)
+    cnn.compile(loss="categorical_crossentropy", optimizer="adam")
+    cnn.summary()
 
+    return cnn
+
+def train_classify_network(EPOCHS):
+    #Load data
     (encodings, labels) = get_known_encodings()
-    model = cov_network(num_classes, input_shape)
-    model.fit(encodings, labels, batch_size=batch_size,epochs=epochs,verbose=1)
-    CNN = Model(input = model.layers[0].input, output = model.layers[-5].output)
-    CNN.summary()
+    x_train = encodings.astype("float32")
+    X_shape = x_train.shape
+    labels = np.array(labels).astype(int)
+    num_classes = len(np.unique(labels))
 
-run_conv_network(1)
+    #Reformat X and Y
+    x_train = x_train.reshape((X_shape[1], 1, X_shape[0], 1))
+    labels = np_utils.to_categorical(labels)
+
+    #Load Model
+    model = cov_network(num_classes+1)
+
+    #Train
+    model.fit(x_train, labels, epochs=EPOCHS)
+    model.save('models/classifier-model')
+
+
+
+train_classify_network(1)

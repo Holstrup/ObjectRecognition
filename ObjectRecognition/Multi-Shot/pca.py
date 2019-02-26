@@ -44,7 +44,7 @@ def plot3D(data, labels):
     scatter_y = data[:, 1]
     scatter_z = data[:, 2]
     group = map(int, labels)
-    cdict = {5: 'red', 6: 'blue', 7: 'green', 8: 'black', 9: 'orange'}
+    cdict = {1: 'red', 2: 'blue', 3: 'green', 4: 'black', 5: 'orange'}
 
 
     plt.subplots()

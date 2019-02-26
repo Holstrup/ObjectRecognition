@@ -1,11 +1,7 @@
-from keras.datasets import mnist
-from sklearn import preprocessing
 import numpy as np
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
-import seaborn as sns
 from database_actions import get_known_encodings
-from mpl_toolkits import mplot3d
 
 def t_sne():
     """

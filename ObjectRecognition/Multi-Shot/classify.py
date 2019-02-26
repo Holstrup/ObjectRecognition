@@ -101,14 +101,16 @@ def run_classify(model_name_time):
             correct += 1
     print "Correct: " + str(correct)
 
-#run_classify("model23-02-2019-12:59")
+def build_imagenet_db(model_name):
+    """
+    Builds the database from the model specified.
 
-def build_imagenet_db():
+    :param model_name: File name of model file
+    """
     database_actions.reinitialize_table()
     TEST_DIR = "Dataset/test/greek/"
-    MODEL_NAME = "resnet50_finetuned"
 
-    load_imagenet_model("models/" + MODEL_NAME)
+    load_imagenet_model("models/" + model_name)
     imagenet_model.compile(optimizer=Adam(lr=0.0001), loss='categorical_crossentropy', metrics=['accuracy'])
 
     file_list = os.listdir(TEST_DIR)[1:]
@@ -125,8 +127,11 @@ def build_imagenet_db():
 
 
 
-def run_classify_imagenet():
-    build_imagenet_db()
+def run_classify_imagenet(model_name):
+    """
+        Run Image-net classification
+    """
+    build_imagenet_db(model_name)
     VAL_DIR = "Dataset/test/validate/"
     file_list = os.listdir(VAL_DIR)
     for imgFile in file_list:
@@ -137,7 +142,4 @@ def run_classify_imagenet():
         print "Predicted label {} for image file: {}".format(new_knn_function(encoding), imgFile)
 
 
-
-
-
-run_classify_imagenet()
+run_classify_imagenet("resnet50-model")
