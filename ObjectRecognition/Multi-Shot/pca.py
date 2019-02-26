@@ -28,7 +28,7 @@ def pca():
     plt.yticks(np.arange(0, 1.1, 0.1))
     plt.axvline(6.5, c='b')
     plt.axhline(0.9, c='r')
-    plt.savefig("figures/pca_explained_variance")
+    #plt.savefig("figures/pca_explained_variance")
     plt.show();
 
     return x_r, labels
@@ -64,7 +64,7 @@ def plot3D(data, labels):
     ax.legend()
     plt.xlabel("X")
     plt.ylabel("Z")
-    plt.savefig("figures/pca_current_encodings_3D")
+    #plt.savefig("figures/pca_current_encodings_3D")
     plt.show()
 
 pca_data, db_labels = pca()

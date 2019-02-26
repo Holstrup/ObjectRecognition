@@ -75,4 +75,5 @@ def get_known_encodings():
     for i in range(len(result_list)):
         encodings[:, i] = result_list[i][0]
         labels.append(result_list[i][1].encode())
-    return encodings, labels
+    encodings = np.nan_to_num(encodings)
+    return encodings.astype('float32'), labels

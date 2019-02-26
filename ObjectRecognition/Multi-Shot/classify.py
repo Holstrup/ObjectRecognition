@@ -29,7 +29,7 @@ def load_imagenet_model(filepath):
     """
     global imagenet_model
     model = load_model(filepath)
-    imagenet_model = Model(input=model.layers[0].input, output=model.layers[-4].output)
+    imagenet_model = Model(input=model.layers[0].input, output=model.layers[-3].output)
     imagenet_model.summary()
 
 
@@ -103,26 +103,15 @@ def run_classify(model_name_time):
 
 #run_classify("model23-02-2019-12:59")
 
-def run_classify_imagenet():
-    """
-    Runs a test of the fine-tuned imagenet network
-
-    :param model_name_time: model name
-    """
+def build_imagenet_db():
     database_actions.reinitialize_table()
-    DD = "Dataset/test/"
     TEST_DIR = "Dataset/test/greek/"
-    MODEL_NAME = "resnet50-4epochs"
-    NUM_CLASSES = 10
+    MODEL_NAME = "resnet50_finetuned"
 
-
-    file_list = os.listdir(TEST_DIR)[1:]
     load_imagenet_model("models/" + MODEL_NAME)
     imagenet_model.compile(optimizer=Adam(lr=0.0001), loss='categorical_crossentropy', metrics=['accuracy'])
 
-    imagenet_model.summary()
-
-
+    file_list = os.listdir(TEST_DIR)[1:]
     for imgFile in file_list:
         if imgFile[0] == ".":
             pass
@@ -133,6 +122,20 @@ def run_classify_imagenet():
             encoding = imagenet_model.predict(img, batch_size=1)
             label = imgFile[0]
             database_actions.add_encoding(encoding, label)
+
+
+
+def run_classify_imagenet():
+    build_imagenet_db()
+    VAL_DIR = "Dataset/test/validate/"
+    file_list = os.listdir(VAL_DIR)
+    for imgFile in file_list:
+        img = image.load_img(VAL_DIR + imgFile, target_size=(224, 224))
+        img = image.img_to_array(img)
+        img = np.expand_dims(img, axis=0)
+        encoding = imagenet_model.predict(img, batch_size=1)
+        print "Predicted label {} for image file: {}".format(new_knn_function(encoding), imgFile)
+
 
 
 

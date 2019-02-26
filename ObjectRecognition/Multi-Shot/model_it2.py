@@ -1,20 +1,18 @@
 import math, os
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.layers import Dense, UpSampling2D, UpSampling1D
+from keras.layers import Dense, UpSampling1D
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
 from keras.applications.resnet50 import ResNet50
-from keras.utils import plot_model
 
 DATA_DIR = 'Dataset'
 TRAIN_DIR = os.path.join(DATA_DIR, 'train')
 VALID_DIR = os.path.join(DATA_DIR, 'valid')
 SIZE = (224, 224)
 BATCH_SIZE = 16
-EPOCHS = 1
+EPOCHS = 10
 
-
+print "-----INITIALIZING-----"
 num_train_samples = sum([len(files) for r, d, files in os.walk(TRAIN_DIR)])
 num_valid_samples = sum([len(files) for r, d, files in os.walk(VALID_DIR)])
 
@@ -35,6 +33,7 @@ classes = list(iter(batches.class_indices))
 model.layers.pop()
 for layer in model.layers:
     layer.trainable = False
+
 last = model.layers[-1].output
 x = Dense(128, activation="relu")(last)
 x = UpSampling1D(size=4)(x)
@@ -47,12 +46,22 @@ for c in batches.class_indices:
     classes[batches.class_indices[c]] = c
 finetuned_model.classes = classes
 
-early_stopping = EarlyStopping(patience=10)
-checkpointer = ModelCheckpoint('models/resnet50_best.h5', verbose=1, save_best_only=True)
-
+print "-----STARTING FIRST TRAINING-----"
 finetuned_model.fit_generator(batches, steps_per_epoch=num_train_steps, epochs=EPOCHS,
-                              callbacks=[early_stopping, checkpointer], validation_data=val_batches,
-                              validation_steps=num_valid_steps)
+                              validation_data=val_batches, validation_steps=num_valid_steps)
 
-finetuned_model.save('models/resnet50_finetuned')
-plot_model(finetuned_model,to_file='demo.png',show_shapes=True)
+print "-----DONE WITH FIRST TRAINING-----"
+
+for layer in finetuned_model.layers:
+    finetuned_model.trainable = True
+
+print "-----STARTING SECOND TRAINING-----"
+finetuned_model.fit_generator(batches, steps_per_epoch=num_train_steps, epochs=EPOCHS,
+                              validation_data=val_batches, validation_steps=num_valid_steps)
+
+
+print "-----SAVING MODEL-----"
+finetuned_model.save('models/resnet50-model')
+print "-----DONE-----"
+
+#plot_model(finetuned_model,to_file='demo.png',show_shapes=True)
