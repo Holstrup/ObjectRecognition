@@ -5,12 +5,13 @@ from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
 from keras.applications.resnet50 import ResNet50
 
+
 DATA_DIR = 'Dataset'
 TRAIN_DIR = os.path.join(DATA_DIR, 'train')
 SIZE = (224, 224)
 BATCH_SIZE = 16
 EPOCHS = 1
-
+L
 print "-----INITIALIZING-----"
 num_train_samples = sum([len(files) for r, d, files in os.walk(TRAIN_DIR)])
 num_train_steps = math.floor(num_train_samples / BATCH_SIZE)

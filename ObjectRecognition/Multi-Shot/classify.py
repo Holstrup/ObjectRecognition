@@ -142,4 +142,4 @@ def run_classify_imagenet(model_name):
         print "Predicted label {} for image file: {}".format(new_knn_function(encoding), imgFile)
 
 
-run_classify_imagenet("resnet50-model")
+run_classify("model11-02-2019-11:59")
