@@ -57,6 +57,8 @@ for iteration in range(max_iter):
       L += pi_k[k] * multivariate_normal.pdf(data, mean=mu[k], cov=Sigma[k])
   log_likelihood[iteration] = np.sum(np.log(L))
 
+print log_likelihood
+
 ## Plot log-likelihood -- did we converge?
 plt.figure(1)
 plt.plot(log_likelihood)
