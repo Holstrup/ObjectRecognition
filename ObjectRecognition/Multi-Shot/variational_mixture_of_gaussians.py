@@ -49,7 +49,7 @@ for _ in range(K):
     W_k.append(v0 * W0)
 
 ## Loop until you're happy
-max_iter = 100
+max_iter = 1000
 ln_rho = np.zeros((N, K))
 for iteration in range(max_iter):
 

@@ -1,7 +1,9 @@
 import numpy as np
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
+from metric_learn import LMNN
 from database_actions import get_known_encodings
+from mpl_toolkits.mplot3d import Axes3D
 
 def t_sne():
     """
@@ -15,6 +17,7 @@ def t_sne():
     tsne = TSNE(n_components, init='pca', random_state=0)
     x_r = tsne.fit_transform(x)
     return x_r, labels
+
 
 def plot3D(data, labels):
     """

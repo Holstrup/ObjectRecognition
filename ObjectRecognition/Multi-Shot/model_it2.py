@@ -57,4 +57,4 @@ print "-----SAVING MODEL-----"
 finetuned_model.save('models/resnet50-model')
 print "-----DONE-----"
 
-#plot_model(finetuned_model,to_file='demo.png',show_shapes=True)
+# plot_model(finetuned_model,to_file='demo.png',show_shapes=True)

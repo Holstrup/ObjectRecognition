@@ -86,10 +86,10 @@ def run_classify(model_name_time):
     (x_test, y_test), input_shape = mnist_test_set(28, 28, 10)
 
 
-    #20 samples in the database
+    #100 samples in the database
     build_db(x_test[0:100], y_test[0:100])
 
-    #Testing on 1000 (different) samples
+    #Testing on 2000 (different) samples
     data = try_classification(x_test[100:2100])
 
     correct = 0

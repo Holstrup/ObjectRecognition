@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from database_actions import get_known_encodings
 from sklearn import manifold
+import metric_learn
 
 # Load the data and define the necessary variables
 X, y = get_known_encodings()
